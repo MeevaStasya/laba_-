@@ -1,0 +1,18 @@
+--- a/app/game.py
++++ b/app/game.py
+@@ -63,11 +63,11 @@
+     if request.method == "POST":
+         nick = request.form.get("nick", "")
+         pw = request.form.get("pw", "")
+-        # УЯЗВИМО: пользовательский ввод напрямую в SQL-запрос.
+-        q = ("SELECT id, nick, is_master FROM players "
+-             "WHERE nick='{}' AND pw='{}'").format(nick, pw)
++        # ИСПРАВЛЕНО: параметризованный запрос, ввод не смешивается с SQL.
+         try:
+-            row = db().execute(q).fetchone()
++            row = db().execute(
++                "SELECT id, nick, is_master FROM players "
++                "WHERE nick=? AND pw=?", (nick, pw)).fetchone()
+         except sqlite3.Error as e:
+             row = None
+             msg = "<p>Ошибка SQL: {}</p>".format(e)

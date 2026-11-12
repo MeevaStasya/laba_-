@@ -1,0 +1,21 @@
+--- a/app/game.py
++++ b/app/game.py
+@@ -13,6 +13,7 @@
+ """
+ import os
+ import sqlite3
++from html import escape
+ from flask import Flask, request, session, redirect
+ 
+ app = Flask(__name__)
+@@ -109,8 +110,8 @@
+     rows = c.execute("SELECT nick, score FROM scores ORDER BY id DESC").fetchall()
+     items = ""
+     for r in rows:
+-        # УЯЗВИМО: ник вставляется в HTML без экранирования.
+-        items += "<li>" + r["nick"] + " — " + str(r["score"]) + " 💰</li>"
++        # ИСПРАВЛЕНО: ник экранируется, HTML-теги становятся текстом.
++        items += "<li>" + escape(r["nick"]) + " — " + escape(str(r["score"])) + " 💰</li>"
+     body = ("<div class=box><form method=post>"
+             "<p>Ник: <input name=nick></p>"
+             "<p>Очки: <input name=score></p>"

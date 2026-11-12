@@ -1,0 +1,13 @@
+--- a/app/game.py
++++ b/app/game.py
+@@ -127,7 +127,9 @@
+ def treasure(pid):
+     if "pid" not in session:
+         return redirect("/login")
+-    # УЯЗВИМО: нет проверки pid == session["pid"].
++    # ИСПРАВЛЕНО: можно смотреть только свой сундук.
++    if pid != session["pid"]:
++        return PAGE.format(body="<div class=box>⛔ Это чужой сундук!</div>"), 403
+     row = db().execute(
+         "SELECT nick, treasure FROM players WHERE id=?", (pid,)
+     ).fetchone()
